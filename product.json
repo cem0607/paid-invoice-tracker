@@ -1,0 +1,9 @@
+{
+  "name": "Paid.",
+  "price_usd": 19,
+  "type": "one_time",
+  "checkout_url": "",
+  "status": "NOT_PUBLISHED",
+  "files": ["Paid.html", "HOW-TO-USE.md"],
+  "note": "checkout_url is empty until a real store account exists. Do not invent one."
+}

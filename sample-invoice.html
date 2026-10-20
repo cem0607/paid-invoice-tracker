@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Invoice INV-001</title>
+<style>
+ body{font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#111;max-width:760px;margin:0 auto;padding:40px}
+ .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:34px}
+ h1{font-size:30px;margin:0;letter-spacing:-.5px}
+ .mut{color:#666;font-size:12px}
+ .card{background:#f7f8fa;border-radius:8px;padding:12px 14px}
+ table{width:100%;border-collapse:collapse;margin-top:22px}
+ th,td{padding:9px 6px;border-bottom:1px solid #e3e6ea;text-align:left}
+ th{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#666}
+ .n{text-align:right;font-variant-numeric:tabular-nums}
+ .total{font-size:19px;font-weight:700}
+ .pay{margin-top:26px;font-size:13px}
+ .foot{margin-top:36px;font-size:11px;color:#888;border-top:1px solid #e3e6ea;padding-top:12px}
+ @media print{body{padding:0}}
+</style></head><body>
+<div class="top">
+  <div><h1>INVOICE</h1><div class="mut">INV-001</div></div>
+  <div class="card"><b>Jane Doe · JD Design</b><br><span class="mut">jane@jddesign.com</span></div>
+</div>
+<div class="top" style="margin-bottom:10px">
+  <div><div class="mut">BILL TO</div><b>Acme Ltd</b></div>
+  <div style="text-align:right"><div class="mut">ISSUED</div><b>2026-10-01</b><div class="mut" style="margin-top:6px">DUE</div><b>2026-10-15</b></div>
+</div>
+<table><thead><tr><th>Description</th><th class="n">Qty</th><th class="n">Rate</th><th class="n">Amount</th></tr></thead>
+<tbody><tr><td>Brand identity design</td><td class="n">10</td><td class="n">$85.00</td><td class="n">$850.00</td></tr><tr><td>Extra revisions</td><td class="n">3</td><td class="n">$85.00</td><td class="n">$255.00</td></tr>
+<tr><td colspan="3" class="n">Subtotal</td><td class="n">$1,105.00</td></tr>
+
+<tr><td colspan="3" class="n total">Total due</td><td class="n total">$1,105.00</td></tr>
+</tbody></table>
+<div class="pay"><b>How to pay</b><br>Bank: IBAN GB00 XXXX · Card: pay.jddesign.com</div>
+<div class="foot">Payment terms: due 2026-10-15. Late payments may incur interest at 18% per year. Generated offline with Paid. — no account, no subscription.</div>
+</body></html>

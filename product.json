@@ -5,5 +5,7 @@
   "checkout_url": "",
   "status": "NOT_PUBLISHED",
   "files": ["Paid.html", "HOW-TO-USE.md"],
-  "note": "checkout_url is empty until a real store account exists. Do not invent one."
+  "delivery": "Automatic private download link after payment, once the seller's Polar account exists and the File Downloads benefit is uploaded. Not active yet.",
+  "refund": "Governed by the payment platform's policy and local consumer law (no fixed day-count is promised by the seller).",
+  "note": "checkout_url stays empty until a real store account exists. Do not invent one. Until then the page sells nothing."
 }

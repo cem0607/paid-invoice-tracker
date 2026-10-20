@@ -31,6 +31,8 @@ th{background:#f7f9fb}
 .cta{margin:40px 0;border:1px solid var(--line);border-radius:14px;padding:26px;text-align:center;background:#fcfdfe}
 .btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;padding:14px 30px;border-radius:10px;font-size:18px;margin:6px 0}
 .btn:hover{background:var(--accent2)}
+.btn-off{background:#c7ced6;cursor:not-allowed}
+.btn-off:hover{background:#c7ced6}
 .price{font-size:34px;font-weight:800;margin:2px 0 2px}
 .small{font-size:14px;color:var(--mut)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
@@ -94,14 +96,43 @@ img.shot{width:100%;border:1px solid var(--line);border-radius:12px;margin:10px 
 
 <div class="cta">
   <div class="price">$19 <span class="small">one-time</span></div>
-  <p class="small" id="buy-note">Checkout opens here once the store is connected.</p>
-  <a class="btn" id="buy-btn" href="#buy" rel="nofollow">Buy Paid. — $19</a>
-  <p class="small">Instant download. No account. 30-day refund if it doesn't save you at least one awkward email.</p>
+  <p class="small" id="buy-note">Checkout is not open yet — billing setup is still in progress. Nothing is for sale on this page today.</p>
+  <span class="btn btn-off" id="buy-btn" aria-disabled="true">Checkout opens soon — not on sale yet</span>
+  <p class="small">When checkout goes live, delivery is instant: the supplier uploads the files to the payment provider, and paying customers receive a private download link automatically. No account needed on your side.</p>
 </div>
 
+<h2>What you get for $19 (and what is free)</h2>
+<p>The free page and the paid file share the same five reminder emails. The difference is who fills in the numbers.</p>
+<table>
+<tr><th></th><th>Free templates</th><th>Paid. — $19 one-time</th></tr>
+<tr><td>Five reminder stages</td><td class="hi">yes</td><td class="hi">yes</td></tr>
+<tr><td>Late-fee formula</td><td class="hi">yes</td><td class="hi">yes</td></tr>
+<tr><td>Filling in name, amount, due date, days late, fee</td><td>you, by hand — 10 blanks per email (<code>[NAME]</code>, <code>[AMOUNT]</code>, <code>[DUE DATE]</code>, <code>[FEE]</code>, <code>[RATE]</code>, <code>[TOTAL]</code>…)</td><td class="hi">automatic — computed from the invoice you enter</td></tr>
+<tr><td>Choosing the right stage for how late it is</td><td>you decide, then copy the matching block</td><td class="hi">automatic (due / 3 / 10 / 20 / 45+ days)</td></tr>
+<tr><td>Tracking which invoice is overdue and by how much</td><td>no — a list of emails only</td><td class="hi">yes — paid / due / overdue / 30+ dashboard</td></tr>
+<tr><td>Accrued interest per invoice</td><td>you do the maths</td><td class="hi">yes, per invoice</td></tr>
+<tr><td>Price</td><td class="hi">$0 forever</td><td class="hi">$19 once, unlimited clients</td></tr>
+</table>
+<p class="small">A worked example from the paid tool: an invoice 35 days late for $4,200 is turned into a final notice that already states “35 days overdue”, the accrued interest ($72.49 at 18%/yr) and the outstanding total ($4,272.49) — the free template leaves those blanks for you.</p>
+
 <h2>Try the free part first</h2>
-<p>The five reminder emails and the late-fee formula are free and always will be — no signup:</p>
+<p>The reminder emails and the late-fee formula are free and always will be — no signup:</p>
+<p><a href="invoice-reminder-generator.html"><strong>→ Free late-invoice reminder generator (type your invoice, get the email)</strong></a></p>
 <p><a href="reminder-email-templates.html"><strong>→ 5 invoice reminder emails that actually get you paid (free templates)</strong></a></p>
+
+<h2>How to use it</h2>
+<p>Short version: save one file, open it in your browser, type your invoice in.</p>
+<ul>
+  <li>No install, no sign-up, no internet connection.</li>
+  <li>Your invoice data stays on your own device (browser storage) — nothing is uploaded.</li>
+  <li>When you're late on a client, the tool picks the right stage and writes the email; you copy it and send.</li>
+</ul>
+<p>Full step-by-step guide: <a href="HOW-TO-USE.md"><strong>→ How to use Paid. (2 minutes)</strong></a></p>
+
+<h2>Delivery and refunds</h2>
+<p><strong>Delivery.</strong> Paid. is sold through an established payment platform that acts as the merchant of record. When checkout is live, the moment a payment completes the buyer receives a private download link to <code>Paid.html</code> and the how-to-use guide automatically — no account, no waiting.</p>
+<p><strong>Important:</strong> this automatic delivery only works once the seller's payment account and product files are finalised. Until then, <strong>this page is not selling anything</strong> and no payment can be taken here.</p>
+<p><strong>Refunds.</strong> The refund terms apply to the platform's own policy and to your local consumer law — they are not set by this page. In short: a buyer of a one-off digital product may request a refund through the platform, which reviews each request under its published terms and applicable law; where the law gives you a stronger right (for example EU/UK consumer rights for digital content), that right always applies and is not reduced here. We do not state a fixed number of days on this page because the seller does not control that window — the payment platform does. Full terms are shown on the checkout page before you pay.</p>
 
 <h2>Who it's for</h2>
 <p>Freelance designers, developers, writers, photographers, consultants, videographers, coaches, translators and VAs — anyone who sends 5–30 invoices a month and hates chasing them. Especially if you bill six or more clients on net-30 or net-45 terms, where free plans start charging you.</p>
@@ -113,11 +144,19 @@ img.shot{width:100%;border:1px solid var(--line);border-radius:12px;margin:10px 
 
 </div>
 <script>
-// Checkout link is filled in when the payment link exists. Until then it is inert and clearly labelled.
+// Checkout link is filled in ONLY when a real payment link exists in product.json.
+// Until then the button stays a disabled, honestly-labelled span — never a fake link.
 fetch('product.json').then(function(r){return r.json()}).then(function(p){
   if(p && p.checkout_url){
-    var b=document.getElementById('buy-btn'); b.href=p.checkout_url;
-    document.getElementById('buy-note').textContent='Secure checkout — instant download.';
+    var s=document.getElementById('buy-btn');
+    var a=document.createElement('a');
+    a.className='btn';
+    a.id='buy-btn';
+    a.rel='nofollow';
+    a.href=p.checkout_url;
+    a.textContent='Buy Paid. — $19';
+    s.parentNode.replaceChild(a,s);
+    document.getElementById('buy-note').textContent='Secure checkout — instant download after payment.';
   }
 }).catch(function(){});
 </script>

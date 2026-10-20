@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Late Invoice Reminder Generator (5 stages) | Paid.</title>
+<meta name="description" content="Free invoice reminder email generator for freelancers. Pick how late the invoice is and get a ready-to-send reminder at the right stage — friendly, firm or final notice. No signup, works offline.">
+<meta property="og:title" content="Free Late Invoice Reminder Generator">
+<meta property="og:description" content="Type your invoice details once, get the right reminder email for how late it is. Free, no signup.">
+<meta property="og:type" content="website">
+<style>
+:root{--ink:#0f141a;--mut:#5b6673;--line:#e3e8ee;--bg:#fff;--accent:#0b6b3a;--accent2:#0a5c32;--warn:#b45309}
+*{box-sizing:border-box}
+body{margin:0;font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+header{padding:40px 0 10px}
+h1{font-size:32px;line-height:1.2;margin:0 0 10px;letter-spacing:-.01em}
+.sub{font-size:18px;color:var(--mut);margin:0 0 6px}
+.badge{display:inline-block;background:#eef7f2;color:var(--accent);font-size:13px;font-weight:600;padding:5px 12px;border-radius:99px;margin-bottom:14px}
+h2{font-size:21px;margin:34px 0 10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+label{display:block;font-size:14px;color:var(--mut);margin-bottom:4px;font-weight:600}
+input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:16px;background:#fff;color:var(--ink)}
+input:focus,select:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+button{background:var(--accent);color:#fff;border:0;border-radius:10px;font-weight:700;padding:13px 26px;font-size:17px;cursor:pointer;margin:6px 6px 6px 0}
+button:hover{background:var(--accent2)}
+button.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+.stage{font-size:14px;color:var(--mut);margin:6px 0}
+.out{border:1px solid var(--line);border-radius:12px;padding:0;margin:16px 0;overflow:hidden}
+.out .subj{background:#f7f9fb;padding:12px 16px;border-bottom:1px solid var(--line);font-size:15px}
+.out textarea{width:100%;border:0;padding:16px;font:15px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:250px;resize:vertical;color:var(--ink);background:#fff}
+.note{font-size:14px;color:var(--mut)}
+.hi{color:var(--accent);font-weight:600}
+.pitch{border:1px solid var(--line);border-radius:12px;padding:18px;background:#fcfdfe;margin:26px 0}
+.pitch .price{font-size:26px;font-weight:800}
+.pitch .btn{display:inline-block;background:#c7ced6;color:#fff;text-decoration:none;font-weight:700;padding:12px 24px;border-radius:10px;cursor:not-allowed}
+footer{border-top:1px solid var(--line);margin-top:40px;padding:20px 0 50px;font-size:14px;color:var(--mut)}
+@media(max-width:640px){.grid{grid-template-columns:1fr}h1{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="badge">Free · No signup · Works offline</span>
+  <h1>Late invoice reminder generator</h1>
+  <p class="sub">Type your invoice once. Get the right reminder email for how late it is — polite at 3 days, firmer at 10, a final notice past 45. Copy and send.</p>
+  <p class="note">This tool is free and always will be. Everything runs in your browser; nothing is uploaded.</p>
+</header>
+
+<h2>1. Your invoice</h2>
+<div class="grid">
+  <div><label>Your name</label><input id="sender" placeholder="e.g. Alex Rivera" autocomplete="name"></div>
+  <div><label>Client name</label><input id="client" placeholder="e.g. Northwind Studio"></div>
+  <div><label>Invoice number</label><input id="no" placeholder="e.g. INV-042"></div>
+  <div><label>Invoice amount</label><input id="amount" type="number" min="0" step="0.01" placeholder="e.g. 4200"></div>
+  <div><label>Currency</label>
+    <select id="cur"><option>USD</option><option>EUR</option><option>GBP</option><option>TRY</option><option>AUD</option><option>CAD</option></select>
+  </div>
+  <div><label>Due date</label><input id="due" type="date"></div>
+  <div><label>Days overdue (leave 0 if not late yet)</label><input id="days" type="number" min="0" step="1" value="0"></div>
+  <div><label>Late fee % per year (optional)</label><input id="rate" type="number" min="0" step="0.1" value="18"></div>
+</div>
+<div><label>Payment details / link (optional)</label><input id="pay" placeholder="e.g. Bank transfer or Stripe link"></div>
+<p><button id="gen">Generate my reminder</button><button class="ghost" id="reset">Reset</button></p>
+
+<h2>2. Your reminder</h2>
+<div class="stage" id="stage"></div>
+<div class="out">
+  <div class="subj" id="subjLine">Subject: —</div>
+  <textarea id="body" readonly placeholder="Fill in the invoice details above, then press Generate."></textarea>
+</div>
+<p><button id="copy">Copy email</button><span class="note" id="copied" style="margin-left:8px"></span></p>
+
+<div class="pitch">
+  <p><strong>Doing this every month for several clients?</strong></p>
+  <p class="note">This generator handles one invoice at a time. <span class="hi">Paid.</span> is a one-time $19 tool that keeps your whole list of invoices, works out which are overdue, and writes the right stage for each — plus the late-fee maths per invoice. Offline, no account, unlimited clients.</p>
+  <p class="price">$19 <span class="note">one-time</span> — <span class="note" id="buyNote">checkout is not open yet; this page sells nothing today.</span></p>
+  <a class="btn" href="#" aria-disabled="true" onclick="return false;">Checkout opens soon</a>
+  <p class="note" style="margin-top:14px;">Prefer to keep a copy? <a href="reminder-email-templates.html">See all 5 reminder emails and the late-fee formula (free)</a>.</p>
+</div>
+
+<footer>
+  <p>This generator runs entirely on your device (no server, no tracking). It is a free lead tool for <strong>Paid.</strong>, a one-time invoice tracker.</p>
+  <p class="note">Not a substitute for legal advice. Late-fee rules differ by country — check your contract and local law.</p>
+</footer>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var SYM={USD:"$",EUR:"\u20ac",GBP:"\u00a3",TRY:"\u20ba",AUD:"A$",CAD:"C$"};
+  function money(v,cur){var s=SYM[cur]||"";return s+v.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+  function stage(days){
+    if(days<=0) return 1;      // due-date nudge
+    if(days<=7) return 2;      // friendly reminder
+    if(days<=14) return 3;     // second reminder
+    if(days<=30) return 4;     // overdue
+    return 5;                  // final notice (>30 days)
+  }
+  var NAMES={1:"Due-date nudge",2:"Friendly reminder",3:"Second reminder",4:"Overdue",5:"Final notice"};
+  function build(){
+    var sender=$("sender").value.trim()||"Your name";
+    var client=$("client").value.trim()||"there";
+    var no=$("no").value.trim()||"INV-000";
+    var amt=parseFloat($("amount").value)||0;
+    var cur=$("cur").value;
+    var due=$("due").value;
+    var days=parseInt($("days").value,10)||0;
+    var rate=parseFloat($("rate").value)||0;
+    var pay=$("pay").value.trim();
+    var total=money(amt,cur);
+    var st=stage(days);
+    var fee=0;
+    if(days>0 && rate>0){ fee=Math.round(amt*(rate/100)*(days/365)*100)/100; }
+    var feeTxt=fee>0?money(fee,cur):"";
+    var grand=fee>0?money(Math.round((amt+fee)*100)/100,cur):total;
+    var dueTxt=due?due:"the due date";
+    var payLine=pay?("\n\nPayment details: "+pay):"";
+    var subj="", body="";
+
+    if(st===1){
+      subj="Invoice "+no+" is due soon";
+      body="Hi "+client+",\n\nJust a quick heads-up that invoice "+no+" for "+total+" is due on "+dueTxt+". If it's already scheduled, thank you — no action needed."+payLine+"\n\nBest regards,\n"+sender;
+    } else if(st===2){
+      subj="Quick check on invoice "+no;
+      body="Hi "+client+",\n\nI hope things are well. Invoice "+no+" for "+total+" was due on "+dueTxt+", so I wanted to check it hasn't slipped through the cracks."+payLine+"\n\nThanks,\n"+sender;
+    } else if(st===3){
+      subj="Invoice "+no+" — "+days+" days overdue";
+      body="Hi "+client+",\n\nFollowing up on invoice "+no+" for "+total+", now "+days+" days past the due date of "+dueTxt+". Could you confirm when payment will be made?"+payLine+"\n\nThanks,\n"+sender;
+    } else if(st===4){
+      subj="Overdue: invoice "+no+" — action needed";
+      body="Hi "+client+",\n\nInvoice "+no+" for "+total+" is now "+days+" days overdue (due "+dueTxt+")."+(fee>0?(" A late fee of "+feeTxt+" has accrued, bringing the total to "+grand+"."):"")+" Please let me know the date payment will be sent."+payLine+"\n\nRegards,\n"+sender;
+    } else {
+      subj="FINAL NOTICE — invoice "+no+" ("+days+" days overdue)";
+      body="Hi "+client+",\n\nThis is a final reminder for invoice "+no+", now "+days+" days overdue. Amount outstanding: "+total+"."+(fee>0?(" Late interest of "+feeTxt+" has accrued, bringing the outstanding total to "+grand+"."):"")+" If payment is not arranged within 7 days I will need to stop further work and consider a formal collection process. I'd much prefer to settle this directly — tell me today what date works."+payLine+"\n\nRegards,\n"+sender;
+    }
+    $("subjLine").textContent="Subject: "+subj;
+    $("body").value=body;
+    var extra="";
+    if(days>0){ extra+=" ("+days+" days overdue"; if(fee>0){ extra+=", "+feeTxt+" late fee accrued"; } extra+=")"; }
+    $("stage").innerHTML="Stage "+st+" of 5 \u2014 <strong>"+NAMES[st]+"</strong>"+extra;
+  }
+  $("gen").addEventListener("click",build);
+  $("reset").addEventListener("click",function(){
+    ["sender","client","no","amount","due","pay"].forEach(function(k){$(k).value=""});
+    $("days").value=0;$("rate").value=18;$("cur").value="USD";
+    $("subjLine").textContent="Subject: —";$("body").value="";$("stage").textContent="";
+  });
+  $("copy").addEventListener("click",function(){
+    var t=$("body"); if(!t.value) return;
+    t.select(); t.setSelectionRange(0,t.value.length);
+    var done=false;
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t.value).then(function(){ok()}).catch(function(){legacy()})}else{legacy()}
+    function legacy(){try{done=document.execCommand("copy");if(done)ok()}catch(e){}}
+    function ok(){$("copied").textContent="Copied.";setTimeout(function(){$("copied").textContent=""},2000)}
+  });
+  // input change -> live update if already generated
+  ["sender","client","no","amount","cur","due","days","rate","pay"].forEach(function(k){
+    $(k).addEventListener("input",function(){ if($("body").value) build(); });
+  });
+  // checkout link only if a real one is provided (same pattern as the store page)
+  fetch("product.json").then(function(r){return r.json()}).then(function(p){
+    if(p&&p.checkout_url){
+      var b=document.querySelector(".pitch .btn"); b.className="btn";
+      b.style.background="var(--accent)"; b.style.cursor="pointer"; b.removeAttribute("aria-disabled");
+      b.href=p.checkout_url; b.textContent="Buy Paid. — $19"; b.onclick=null;
+      $("buyNote").textContent="secure checkout, instant download.";
+    }
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>

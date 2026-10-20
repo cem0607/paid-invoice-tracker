@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paid. — Invoice &amp; Payment Reminder Tracker for Freelancers</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--panel2:#1c2330;--line:#30363d;--tx:#e6edf3;--mut:#8b949e;
+        --acc:#58a6ff;--ok:#3fb950;--warn:#d29922;--bad:#f85149}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  header{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+  h1{margin:0;font-size:22px;letter-spacing:-.3px}
+  h1 span{color:var(--acc)}
+  .sub{color:var(--mut);font-size:13px;margin-top:3px}
+  .pill{background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--mut)}
+  main{max-width:1080px;margin:0 auto;padding:20px}
+  .grid{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
+  section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+  h2{font-size:15px;margin:0 0 12px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut)}
+  label{display:block;font-size:12px;color:var(--mut);margin:8px 0 3px}
+  input,select,button{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:8px 10px;width:100%}
+  input:focus,select:focus{outline:none;border-color:var(--acc)}
+  button{cursor:pointer;border:none;background:var(--acc);color:#03121f;font-weight:600}
+  button.alt{background:var(--panel2);color:var(--tx);border:1px solid var(--line)}
+  button.sm{width:auto;padding:5px 10px;font-size:12px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .row3{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+  th{color:var(--mut);font-size:12px;text-transform:uppercase}
+  .tag{font-size:11px;padding:2px 8px;border-radius:20px;white-space:nowrap}
+  .t-ok{background:#12261a;color:var(--ok)}.t-warn{background:#2a2410;color:var(--warn)}.t-bad{background:#2d1416;color:var(--bad)}.t-mut{background:var(--panel2);color:var(--mut)}
+  .kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(min-width:600px){.kpi{grid-template-columns:repeat(4,1fr)}}
+  .kpi div{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:11px}
+  .kpi b{display:block;font-size:20px;margin-top:3px}
+  .kpi small{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+  textarea{width:100%;min-height:150px;background:var(--bg);color:var(--tx);border:1px solid var(--line);border-radius:7px;padding:10px;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;resize:vertical}
+  .hint{color:var(--mut);font-size:12px;margin-top:6px}
+  .toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--ok);color:#04170a;padding:9px 16px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;transition:.25s;pointer-events:none}
+  .toast.on{opacity:1}
+  .empty{color:var(--mut);font-size:13px;padding:10px 0}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Paid<span>.</span></h1>
+    <div class="sub">Invoices &amp; payment reminders for freelancers — offline, no account, no subscription</div>
+  </div>
+  <div class="pill" id="ratePill">Late fee: 0% / yr</div>
+</header>
+
+<main>
+  <div class="grid">
+    <section>
+      <h2>Your details</h2>
+      <label>Your name / business</label>
+      <input id="gonderen" placeholder="Jane Doe · JD Design">
+      <label>Payment instructions shown on reminders</label>
+      <input id="odeme" placeholder="Bank: IBAN XX... | Card: pay link">
+      <div class="row">
+        <div><label>Currency</label>
+          <select id="sembol">
+            <option value="$">USD $</option><option value="€">EUR €</option>
+            <option value="£">GBP £</option><option value="₺">TRY ₺</option>
+            <option value="A$">AUD A$</option><option value="C$">CAD C$</option>
+          </select></div>
+        <div><label>Late fee (% per year)</label><input id="faiz" type="number" value="18" min="0" step="0.5"></div>
+      </div>
+      <div class="row">
+        <div><label>Tax / VAT (%)</label><input id="kdv" type="number" value="0" min="0" step="0.5"></div>
+        <div><label>Default terms (days)</label><input id="vadegun" type="number" value="14" min="0"></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>New invoice</h2>
+      <div class="row">
+        <div><label>Invoice #</label><input id="fno" value="INV-001"></div>
+        <div><label>Client</label><input id="musteri" placeholder="Acme Ltd"></div>
+      </div>
+      <div class="row">
+        <div><label>Invoice date</label><input id="ftarih" type="date"></div>
+        <div><label>Due date</label><input id="fvade" type="date"></div>
+      </div>
+      <label>Line items</label>
+      <div class="row3">
+        <input id="lacik" placeholder="Description">
+        <input id="ladet" type="number" value="1" min="0" step="0.5" title="Qty / hours">
+        <input id="lfiyat" type="number" placeholder="Rate" min="0" step="0.01">
+        <button class="alt" id="ekle">Add</button>
+      </div>
+      <table id="satirlar"><tbody></tbody></table>
+      <div class="hint" id="araToplam">Subtotal: —</div>
+      <button id="kaydet" style="margin-top:12px">Save invoice</button>
+    </section>
+  </div>
+
+  <section style="margin-top:16px">
+    <h2>Portfolio</h2>
+    <div class="kpi" id="kpi"></div>
+    <div style="overflow-x:auto;margin-top:14px">
+      <table id="portfoy"><tbody></tbody></table>
+    </div>
+    <div class="hint">Set a due date in the past and click a row to get the ready-to-send reminder for that stage.</div>
+  </section>
+
+  <section style="margin-top:16px">
+    <h2>Reminder to send <span class="pill" id="asamaPill">—</span></h2>
+    <div class="row" style="margin-bottom:8px">
+      <div><label>Subject</label><input id="konu" readonly></div>
+      <div><label>Stage</label><input id="asamaAd" readonly></div>
+    </div>
+    <textarea id="metin" placeholder="Click an open invoice above to generate a staged, professional reminder."></textarea>
+    <div class="row" style="margin-top:8px">
+      <button id="kopyala">Copy email</button>
+      <button class="alt" id="indir">Download .txt</button>
+    </div>
+  </section>
+
+  <section style="margin-top:16px">
+    <h2>Why this pays for itself</h2>
+    <div id="karsilastirma"></div>
+    <div class="hint" id="gecikmeNotu"></div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==== motor (paid_motor.js ile ayni mantik; tek dosya olsun diye gomulu) ==== */
+function para(deger, sembol){
+  const s = sembol || "$";
+  const n = Math.round((Number(deger)+Number.EPSILON)*100)/100;
+  const [tam,kurus] = n.toFixed(2).split(".");
+  return s + tam.replace(/\B(?=(\d{3})+(?!\d))/g,",") + "." + kurus;
+}
+function gunEkle(iso, gun){ const d=new Date(iso+"T00:00:00Z"); d.setUTCDate(d.getUTCDate()+gun); return d.toISOString().slice(0,10); }
+function gunFarki(a,b){ return Math.round((new Date(b+"T00:00:00Z")-new Date(a+"T00:00:00Z"))/86400000); }
+function faturaToplami(f, ayar){
+  const satirlar=(f.satirlar||[]).map(s=>{const adet=Number(s.adet)||0,birim=Number(s.birim_fiyat)||0;
+    return {aciklama:s.aciklama||"",adet,birim_fiyat:birim,tutar:Math.round(adet*birim*100)/100};});
+  const ara=Math.round(satirlar.reduce((t,s)=>t+s.tutar,0)*100)/100;
+  const kdv=Math.round(ara*(Number(ayar.kdv_yuzde)||0)/100*100)/100;
+  return {satirlar,ara_toplam:ara,kdv,toplam:Math.round((ara+kdv)*100)/100};
+}
+function durum(f, bugun, ayar){
+  const t=faturaToplami(f,ayar), vade=f.vade||gunEkle(f.tarih,14);
+  const kalan=Number(f.odenen_tutar)||0;
+  const acik=Math.round((t.toplam-kalan)*100)/100;
+  if(f.odendi||acik<=0) return {durum:"odendi",vade,gun_gecikme:0,faiz:0,acik_bakiye:0,toplam:t.toplam,tahsil_edilecek:0};
+  const g=Math.max(0,gunFarki(vade,bugun));
+  const faiz=Math.round(acik*((Number(ayar.gecikme_faizi_yillik)||0)/100)*(g/365)*100)/100;
+  let e="vadesi_gelmemis";
+  if(g>0) e = g<=7?"gecikti_hafif":(g<=30?"gecikti":"gecikti_ciddi");
+  return {durum:e,vade,gun_gecikme:g,faiz,acik_bakiye:acik,toplam:t.toplam,tahsil_edilecek:Math.round((acik+faiz)*100)/100};
+}
+function hatirlatmaMetni(f, bugun, ayar){
+  const d=durum(f,bugun,ayar), m=f.musteri||"there", k=(f.gonderen&&f.gonderen.ad)||"Your name",
+        no=f.no||"INV-0001", tut=para(d.acik_bakiye,ayar.sembol), g=d.gun_gecikme,
+        imza="\n\nBest regards,\n"+k, odeme=ayar.odeme||"";
+  // Stage 5 closes with "Regards," and must not double the signature block.
+  const imzaResmi="\n\nRegards,\n"+k;
+  if(d.durum==="odendi") return {asama:0,ad:"Receipt",konu:"Receipt for invoice "+no,
+    metin:"Hi "+m+",\n\nThank you — payment for invoice "+no+" ("+tut+") has been received. This email is your receipt."+imza};
+  if(g===0) return {asama:1,ad:"Due-date nudge",konu:"Quick note about invoice "+no+" (due "+d.vade+")",
+    metin:"Hi "+m+",\n\nJust a quick note that invoice "+no+" for "+tut+" is due on "+d.vade+".\n\n"+(odeme?("Payment details: "+odeme+"\n\n"):"")+"No action needed if it's already scheduled."+imza};
+  if(g<=7) return {asama:2,ad:"Friendly reminder",konu:"Friendly reminder — invoice "+no+" was due "+d.vade,
+    metin:"Hi "+m+",\n\nHope you're doing well. Invoice "+no+" for "+tut+" was due on "+d.vade+" ("+g+" day"+(g===1?"":"s")+" ago).\n\nIt may have slipped through — could you let me know when payment is scheduled?"+(odeme?("\n\n"+odeme):"")+"\n\nThank you!"+imza};
+  if(g<=14) return {asama:3,ad:"Second reminder",konu:"Second reminder — overdue balance "+tut+" (invoice "+no+")",
+    metin:"Hi "+m+",\n\nFollowing up on invoice "+no+": "+tut+" is now "+g+" days past due (due date "+d.vade+").\n\nCould you confirm the payment date, or let me know if anything is blocking it on your side?"+(odeme?("\n\n"+odeme):"")+"\n\nThank you,"+imza};
+  const fs=(ayar.gecikme_faizi_yillik>0&&d.faiz>0)?(" Late interest of "+para(d.faiz,ayar.sembol)+" has accrued, bringing the outstanding total to "+para(d.tahsil_edilecek,ayar.sembol)+"."):"";
+  if(g<=30) return {asama:4,ad:"Overdue",konu:"Overdue invoice "+no+" — "+tut+" ("+g+" days late)",
+    metin:"Hi "+m+",\n\nInvoice "+no+" remains unpaid "+g+" days after its due date of "+d.vade+". The outstanding balance is "+tut+"."+fs+"\n\nPlease arrange payment this week, or reply today with a specific date. If there's an issue with the work or the invoice, tell me and we'll fix it."+(odeme?("\n\n"+odeme):"")+"\n\nThank you,"+imza};
+  return {asama:5,ad:"Final notice",konu:"FINAL NOTICE — invoice "+no+" ("+g+" days overdue)",
+    metin:"Hi "+m+",\n\nThis is a final reminder for invoice "+no+", now "+g+" days overdue. Amount outstanding: "+tut+"."+fs+"\n\nIf payment is not arranged within 7 days I will need to stop further work and consider a formal collection process. I'd much prefer to settle this directly — tell me today what date works."+(odeme?("\n\nPayment details: "+odeme):"")+imzaResmi};
+}
+function karsilastir(fiyat){
+  const R=[{ad:"QuickBooks Online",ay:37.5},{ad:"FreshBooks Lite (5 clients)",ay:19},{ad:"Harvest (1 seat)",ay:13.75},{ad:"Invoice Ninja (hosted)",ay:10}];
+  const en=Math.min.apply(null,R.map(r=>r.ay)), p=fiyat||19;
+  return {R,en,yillikTasarruf:Math.round((en*12-p)*100)/100,amortiGun:Math.round(p/en*30)};
+}
+
+/* ==== arayuz ==== */
+const $=id=>document.getElementById(id);
+let satirlar=[], faturalar=[], secili=null;
+const KEY="paid_faturalar_v1";
+let ayar={sembol:"$",gecikme_faizi_yillik:18,kdv_yuzde:0,vade_gun:14,gonderen:{ad:""},odeme:""};
+
+function bugunISO(){ const d=new Date(); return d.toISOString().slice(0,10); }
+function ayarOku(){
+  ayar.sembol=$("sembol").value;
+  ayar.gecikme_faizi_yillik=Number($("faiz").value)||0;
+  ayar.kdv_yuzde=Number($("kdv").value)||0;
+  ayar.vade_gun=Number($("vadegun").value)||14;
+  ayar.gonderen={ad:$("gonderen").value};
+  ayar.odeme=$("odeme").value;
+  $("ratePill").textContent="Late fee: "+ayar.gecikme_faizi_yillik+"% / yr";
+}
+function kaydetLS(){ try{ localStorage.setItem(KEY, JSON.stringify(faturalar)); }catch(e){} }
+function yukleLS(){ try{ const v=localStorage.getItem(KEY); if(v) faturalar=JSON.parse(v); }catch(e){} }
+
+function satirCiz(){
+  const tb=$("satirlar").querySelector("tbody"); tb.innerHTML="";
+  satirlar.forEach((s,i)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML='<td>'+s.aciklama+'</td><td class="num">'+s.adet+'</td><td class="num">'+
+      para(s.birim_fiyat,ayar.sembol)+'</td><td class="num">'+para(s.tutar,ayar.sembol)+
+      '</td><td class="num"><button class="alt sm" data-i="'+i+'">×</button></td>';
+    tb.appendChild(tr);
+  });
+  const t=faturaToplami({satirlar},ayar);
+  $("araToplam").textContent="Subtotal: "+para(t.ara_toplam,ayar.sembol)+
+    (ayar.kdv_yuzde>0?(" · Tax "+ayar.kdv_yuzde+"%: "+para(t.kdv,ayar.sembol)+" · Total: "+para(t.toplam,ayar.sembol)):"");
+  tb.querySelectorAll("button").forEach(b=>b.onclick=()=>{satirlar.splice(Number(b.dataset.i),1);satirCiz();});
+}
+
+function portfoyCiz(){
+  const bugun=bugunISO();
+  const rows=faturalar.map(f=>Object.assign({_f:f},durum(f,bugun,ayar)));
+  const tb=$("portfoy").querySelector("tbody"); tb.innerHTML="";
+  const acik=rows.filter(r=>r.durum!=="odendi").reduce((t,r)=>t+r.acik_bakiye,0);
+  const gec=rows.filter(r=>r.gun_gecikme>0).reduce((t,r)=>t+r.acik_bakiye,0);
+  const ciddi=rows.filter(r=>r.gun_gecikme>30).reduce((t,r)=>t+r.acik_bakiye,0);
+  const faiz=rows.reduce((t,r)=>t+(r.faiz||0),0);
+  $("kpi").innerHTML=
+    '<div><small>Open balance</small><b>'+para(acik,ayar.sembol)+'</b></div>'+
+    '<div><small>Overdue</small><b style="color:var(--warn)">'+para(gec,ayar.sembol)+'</b></div>'+
+    '<div><small>&gt;30 days late</small><b style="color:var(--bad)">'+para(ciddi,ayar.sembol)+'</b></div>'+
+    '<div><small>Late fees accrued</small><b>'+para(faiz,ayar.sembol)+'</b></div>';
+  if(!rows.length){ tb.innerHTML='<tr><td class="empty">No invoices yet — add one above.</td></tr>'; return; }
+  tb.innerHTML='<tr><th>Invoice</th><th>Client</th><th>Due</th><th>Status</th><th class="num">Outstanding</th><th></th></tr>';
+  rows.forEach(r=>{
+    const tr=document.createElement("tr");
+    const cls=r.durum==="odendi"?"t-ok":(r.gun_gecikme>0?(r.gun_gecikme>30?"t-bad":"t-warn"):"t-mut");
+    const et=r.durum==="odendi"?"PAID":(r.gun_gecikme>0?r.gun_gecikme+" days late":"not due");
+    tr.innerHTML='<td>'+r._f.no+'</td><td>'+r._f.musteri+'</td><td>'+r.vade+
+      '</td><td><span class="tag '+cls+'">'+et+'</span></td><td class="num">'+
+      para(r.acik_bakiye+(r.faiz||0),ayar.sembol)+'</td><td></td>';
+    if(r.durum!=="odendi"){
+      const b=document.createElement("button"); b.className="alt sm"; b.textContent="Reminder";
+      b.onclick=()=>{ secili=r._f; metinCiz(); };
+      tr.lastChild.appendChild(b);
+      const p=document.createElement("button"); p.className="alt sm"; p.textContent="Mark paid"; p.style.marginLeft="4px";
+      p.onclick=()=>{ r._f.odendi=true; r._f.odeme_tarihi=bugunISO(); kaydetLS(); portfoyCiz(); toast("Marked paid"); };
+      tr.lastChild.appendChild(p);
+    }
+    tb.appendChild(tr);
+  });
+}
+
+function metinCiz(){
+  if(!secili) return;
+  const m=hatirlatmaMetni(secili,bugunISO(),ayar);
+  $("konu").value=m.konu; $("asamaAd").value=m.ad;
+  $("metin").value=m.metin;
+  $("asamaPill").textContent="Stage "+m.asama+" / 5";
+}
+
+function karsilastirmaCiz(){
+  const k=karsilastir(19);
+  let h='<table><tr><th>Alternative</th><th class="num">Per year</th></tr>';
+  k.R.forEach(r=>{ h+='<tr><td>'+r.ad+'</td><td class="num" style="color:var(--bad)">'+para(Math.round(r.ay*12*100)/100,ayar.sembol)+'</td></tr>'; });
+  h+='<tr><td><b>Paid.</b> (one-time)</td><td class="num" style="color:var(--ok)"><b>'+para(19,ayar.sembol)+'</b></td></tr></table>';
+  h+='<p class="hint">Cheapest alternative is '+para(k.en,ayar.sembol)+'/mo → Paid. saves '+para(k.yillikTasarruf,ayar.sembol)+' in year one and pays for itself in '+k.amortiGun+' days.</p>';
+  $("karsilastirma").innerHTML=h;
+  const gm=10000*0.12*(45/365);
+  $("gecikmeNotu").textContent="For context: $10,000 sitting 45 days late costs you about "+para(Math.round(gm*100)/100,ayar.sembol)+" in lost cash-flow value at a 12% opportunity cost. Chasing politely is the expensive part — this tool writes the follow-ups for you.";
+}
+function toast(t){ const el=$("toast"); el.textContent=t; el.classList.add("on"); setTimeout(()=>el.classList.remove("on"),1400); }
+
+/* olaylar */
+$("ekle").onclick=()=>{
+  const a=$("lacik").value.trim(), ad=Number($("ladet").value)||0, bf=Number($("lfiyat").value)||0;
+  if(!a||ad<=0){ toast("Enter description and quantity"); return; }
+  satirlar.push({aciklama:a,adet:ad,birim_fiyat:bf});
+  $("lacik").value=""; $("ladet").value="1"; $("lfiyat").value=""; satirCiz();
+};
+$("kaydet").onclick=()=>{
+  if(!satirlar.length){ toast("Add at least one line item"); return; }
+  const tarih=$("ftarih").value||bugunISO();
+  const vade=$("fvade").value||gunEkle(tarih,ayar.vade_gun);
+  faturalar.push({no:$("fno").value||("INV-"+String(faturalar.length+1).padStart(3,"0")),
+    musteri:$("musteri").value||"Client",tarih,vade,satirlar:satirlar.slice(),gonderen:ayar.gonderen,odendi:false});
+  satirlar=[]; satirCiz(); kaydetLS(); portfoyCiz();
+  const n=faturalar.length+1; $("fno").value="INV-"+String(n).padStart(3,"0");
+  toast("Invoice saved");
+};
+$("kopyala").onclick=()=>{ const el=$("metin"); el.select(); try{document.execCommand("copy");}catch(e){} if(navigator.clipboard) navigator.clipboard.writeText(el.value).catch(()=>{}); toast("Copied"); };
+$("indir").onclick=()=>{
+  const blob=new Blob([$("konu").value+"\n\n"+$("metin").value],{type:"text/plain"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="reminder.txt"; a.click(); toast("Downloaded");
+};
+["sembol","faiz","kdv","vadegun","gonderen","odeme"].forEach(id=>$(id).addEventListener("input",()=>{ ayarOku(); satirCiz(); portfoyCiz(); if(secili) metinCiz(); karsilastirmaCiz(); }));
+$("odeme").addEventListener("input",()=>{ if(secili) metinCiz(); });
+
+/* baslat */
+$("ftarih").value=bugunISO();
+$("fvade").value=gunEkle(bugunISO(),14);
+yukleLS(); ayarOku(); satirCiz(); portfoyCiz(); karsilastirmaCiz();
+</script>
+</body>
+</html>
